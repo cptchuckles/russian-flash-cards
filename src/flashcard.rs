@@ -1,13 +1,14 @@
 #![allow(dead_code)]
 use std::fs::File;
-use std::io::BufReader;
-use std::io::prelude::*;
-use std::io;
+use std::io::{BufRead, BufReader};
+use std::collections::HashMap;
+
 
 pub struct Deck {
     cols: u8,
     splitter: char,
     content: Vec<String>,
+    pub vars: HashMap<String,String>,
 }
 
 impl Deck {
@@ -15,6 +16,7 @@ impl Deck {
         Deck { cols: 0,
                splitter: ' ',
                content: Vec::new(),
+               vars: HashMap::new(),
         }
     }
     
@@ -28,10 +30,15 @@ impl Deck {
         r
     }
     
-    pub fn new_from_file(file: &str) -> io::Result<Deck> {
-        let mut d = Deck::new();
-        load_deck_from_file(&mut d, file)?;
-        Ok(d)
+    pub fn new_from_file(file: &str) -> Option<Deck> {
+        let d = match load_deck_from_file(file) {
+            Ok(deck) => Some(deck),
+            Err(s) => {
+                println!("Deck::new_from_file() failed:\n   {}", s);
+                None
+            },
+        };
+        d
     }
     
     pub fn empty(&mut self) {
@@ -63,14 +70,29 @@ impl Deck {
     }
 }
 
-pub fn load_deck_from_file(deck: &mut Deck, file: &str) -> io::Result<()> {
-    let f = File::open(file)?;
-    let buf = BufReader::new(f);
+pub fn load_deck_from_file(file: &str) -> Result<Deck, String> {
+    let f = File::open(file);
+    if f.is_err() { return Err(format!("Bad filename: {}", file)); }
     
-    if !deck.is_empty() { deck.empty(); }
-    for line in buf.lines().map(|l| l.unwrap()) {
-        &deck.push_card(line.into());
+    let buf = BufReader::new(f.unwrap());
+    
+    let mut deck = Deck::new();
+    for mut line in buf.lines().map(|l| l.unwrap()) {
+        let token:char = line.chars().next().unwrap();
+        match token {
+            '#' => {
+                if let Some(space) = line.find(' ')
+                {
+                    let (k, v) = line.split_at(space);
+                    let v = String::from(v.trim());
+                    deck.vars.insert(String::from(k), String::from(v));
+                } else {
+                    return Err(format!("Deck var error: {} in {}", line, file));
+                }
+            },
+            _ => deck.push_card(line.into()),
+        }
     }
     
-    Ok(())
+    Ok(deck)
 }

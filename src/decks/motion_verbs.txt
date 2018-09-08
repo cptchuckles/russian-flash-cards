@@ -1,5 +1,6 @@
 #Indefinite I
 #Definite D
+#poop P
 Ходить Идти
 Ездить Ехать
 Бегать Бежать
