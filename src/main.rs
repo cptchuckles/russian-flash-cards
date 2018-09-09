@@ -1,14 +1,15 @@
-use std::io;
-
+extern crate rand;
 mod flashcard;
+use std::io;
 use flashcard::*;
+use rand::prelude::*;
 
 
 fn main() {
     
     if let Some(deck) = prompt_for_deck() {    
         //debug stuff:
-        println!("Deck reads ok, cards: {}", deck.len());
+        println!("Deck reads ok, cards: {}", deck.content.len());
         print_deck(&deck);
         println!("============================");
         
@@ -21,9 +22,9 @@ fn main() {
 
 fn print_deck(deck: &Deck) {
     let mut i:usize = 0;
-    while let Some(card) = deck.get_card_data(i) {
-        let mut t = card.split(' ');
-        println!("{} - {}", t.next().unwrap(), t.next().unwrap());
+    println!("Deck max columns: {}", deck.cols);
+    while let Some(card) = deck.get_card(i) {
+        println!("{} - {}", card[0], card[1]);
         i += 1;
     }
 }
@@ -37,3 +38,5 @@ fn prompt_for_deck() -> Option<Deck> {
     
     Deck::new_from_file(&file)
 }
+
+

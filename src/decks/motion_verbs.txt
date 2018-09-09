@@ -1,16 +1,15 @@
 #Indefinite I
 #Definite D
-#poop P
-Ходить Идти
-Ездить Ехать
-Бегать Бежать
-Бродить Брести
-Гонять Гнать
-Лазить Лезть
-Летать Лететь
-Плавать Плыть
-Ползать Ползти
-Возить Везти
-Носить Нести
-Водить Вести
-Таскать Тащить
+Ходить,Идти:To go by foot (walk)
+Ездить,Ехать:To go by transport
+Бегать,Бежать:To run
+Бродить,Брести:To stroll
+Гонять,Гнать:To drive (cattle)
+Лазить,Лезть:To fly
+Летать,Лететь:To climb
+Плавать,Плыть:To swim, sail
+Ползать,Ползти:To crawl
+Возить,Везти:To transport, carry (by vehicle)
+Носить,Нести:To carry, wear
+Водить,Вести:To lead, accompany, drive (a car)
+Таскать,Тащить:To drag, pull
